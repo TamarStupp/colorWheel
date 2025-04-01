@@ -1,6 +1,6 @@
 <template>
         <!-- last two values in viewbox are height and width -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="svg" viewBox="-50 -50 100 100" fill="none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="svg" id="wheelSvg" viewBox="-50 -50 100 100" fill="none" ref="svg">
             <defs>
                 <path id="slice"
             :d="
@@ -9,6 +9,14 @@
             A ${radius} ${radius} 0 ${Number(numberOfSlices < 2)} 1 ${wantedX} ${wantedY}
             L ${cx} ${cy}
             `" stroke-width="1" stroke="black" ></path>
+
+            <path id="textPath"
+                :d="`M ${cx}, ${cy}
+                    L ${textPathX} ${textPathY}
+                    M ${cx}, ${cy - lineHeight}
+                    L ${textPathX} ${textPathY - lineHeight}
+                    M ${cx}, ${cy - 2*lineHeight}
+                    L ${textPathX} ${textPathY - 2*lineHeight}`" stroke="pink" stroke-width="2"/>
             </defs>
             <!-- colorMode: array -->
              <g v-if="colorMode === 'array' && colors">
@@ -18,10 +26,15 @@
                  :fill="colors[(n - 1) % (colors.length)]"></use>
              </g>
              <g v-else>
-                 <use href="#slice" 
-                 v-for="n in numberOfSlices"
-                 :transform="`rotate( ${(n)*(360/numberOfSlices)}, ${cx}, ${cy} )`"
-                 :fill="`hsl(${this.hslObj.hueJump * (n - 1) + this.hslObj.startHue}deg ${this.hslObj.saturation}% ${this.hslObj.lightness}%)`"></use>
+                <g v-for="n in numberOfSlices"
+                :transform="`rotate( ${(n)*(360/numberOfSlices)}, ${cx}, ${cy} )`">
+                    <use href="#slice" 
+                    :fill="`hsl(${this.hslObj.hueJump * (n - 1) + this.hslObj.startHue}deg ${this.hslObj.saturation}% ${this.hslObj.lightness}%)`"></use>
+                    <text :style="`font-size: clamp(0.5rem, ${radiusInPx/text.length}px, 2rem)`" fill="black"> 
+                            <textPath href="#textPath">{{  text }} </textPath>
+                        </text>
+                    <!-- <use href="#textPath"></use> -->
+                </g>
              </g>
         </svg>
 </template>
@@ -66,6 +79,9 @@ export default {
             radius: 49,
             cy: 0,
             cx: 0,
+            text: 'hi gffds fdasaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            svgWidth: 0,
+            lineHeight: -6
         }
     },
     computed: {
@@ -86,6 +102,25 @@ export default {
                 lightness: this.hsl.lightness || 60 
             }
         },
+        radiusInPx() {
+            return (this.radius * this.svgWidth)/100;
+        },
+        textPathX () {
+            return Math.cos(this.radianPerSlice / 2) * this.radius + this.cx;
+        },
+        textPathY () {
+            return Math.sin(this.radianPerSlice / 2) * this.radius + this.cy;
+        },
+        // lineHeight() {
+        //     if (window.innerWidth > 1024) {
+        //         return 25;
+        //     } else {
+        //         return 50;
+        //     }
+        // }
+    },
+    mounted () {
+        this.svgWidth = Number(this.$refs.svg.getBoundingClientRect().width)
     }
 }
 </script>
