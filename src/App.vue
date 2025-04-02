@@ -90,6 +90,7 @@ import WheelSvg from "./components/WheelSvg.vue"
         height: 48px;
         border-radius: 2rem 2rem;
         cursor: pointer;
+        color: black;
     }
 
     .hsl-btns {
