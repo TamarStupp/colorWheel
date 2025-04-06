@@ -7,9 +7,9 @@
       :numberOfSlices="numberOfSlices"
     ></WheelSvg>
             <div>
-              <button id="plus" @click="numberOfSlices++">+</button>
-              <span> {{ numberOfSlices }}</span>
               <button id="minus" @click="numberOfSlices = Math.max(numberOfSlices - 1, 0)">-</button>
+              <span> {{ numberOfSlices }}</span>
+              <button id="plus" @click="numberOfSlices++">+</button>
               <button @click="numberOfSlices = 1">reset</button>
           </div>
         <div>
@@ -23,10 +23,10 @@
             @input="hsl.startHue = Number($event.target.value)" />
           </div>
           <div>
-              <button id="plus-huejump" @click="hsl.hueJump++">+</button>
+              <button id="minus-huejump" @click="hsl.hueJump = Math.max(hsl.hueJump - 1, 0)">-</button>
               <label for="hueJump">hue jump: </label>
               <span> {{ hsl.hueJump }}</span>
-              <button id="minus-huejump" @click="hsl.hueJump = Math.max(hsl.hueJump - 1, 0)">-</button>
+              <button id="plus-huejump" @click="hsl.hueJump++">+</button>
               <button @click="hsl.hueJump = 0">reset</button>
           </div>
         </div>
